@@ -1,0 +1,15 @@
+{
+    "name": "WCH2Ino",
+    "version": "1.0.0",
+    "description": "Comprehensive library for button and encoder handling on Arduino-compatible platforms.",
+    "authors": [
+      {
+        "name": "vicitacal",
+        "email": "vicitacal11@yandex.ru"
+      }
+    ],
+    "keywords": ["compatibility", "arduino", "Wch32"],
+    "frameworks": "*",
+    "platforms": "*"
+  }
+  
