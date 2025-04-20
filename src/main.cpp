@@ -40,7 +40,7 @@ public:
 		// NVIC_Init(&NVIC_InitStruct);
 		// Click();
 
-		NVIC_EnableIRQ(15); // Используем прерывание TIM2
+		NVIC_EnableIRQ(TIM2_IRQn); // Используем прерывание TIM2
 		Click();
 		TIM_Cmd(TIM2, ENABLE);
 		Click();
