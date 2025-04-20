@@ -1,7 +1,5 @@
 #define STATE_HIGH 0x1
 #define STATE_LOW 0x0
-#define FUN_OUTPUT (GPIO_Speed_10MHz | GPIO_CNF_OUT_PP)
-#define FUN_INPUT (GPIO_CNF_IN_FLOATING)
 
 #define PA1 1
 #define PA2 2
@@ -26,8 +24,8 @@
 #define PIN_ENC_B PA2
 #define PIN_DISP_SDA PC0
 #define PIN_CTRL_MAG PC3
-#define PIN_POWER_POT PC4
 #define PIN_CTRL_ATTACH PC5
+#define PIN_POWER_POT PC4
 #define PIN_BUZZER PD0
 #define PIN_ENC_BUT PD3
 #define PIN_DETECT_DOOR PD4
