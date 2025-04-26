@@ -4,12 +4,12 @@
 
 volatile unsigned long milliseconds = 0;
 
-void TIM2_IRQHandler(void) __attribute__((interrupt));
-void TIM2_IRQHandler(void) {
-    if (TIM_GetITStatus(TIM2, TIM_IT_Update) != RESET) {
-        milliseconds++;
-        TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
-    }
+extern "C" void TIM2_IRQHandler(void) __attribute__((interrupt("WCH-Interrupt-fast")));
+extern "C" void TIM2_IRQHandler(void) {
+  if (TIM_GetITStatus(TIM2, TIM_IT_Update) != RESET) {
+    milliseconds++;
+    TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
+  }
 }
 
 void initMillis(void) {
@@ -57,7 +57,7 @@ unsigned long micros(void) {
     uint16_t cnt;
     __disable_irq();
     ms = milliseconds;
-    cnt = TIM1->CNT;
+    cnt = TIM2->CNT;
     __enable_irq();
     return ms * 1000 + cnt;
 }
