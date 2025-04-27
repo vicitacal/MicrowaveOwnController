@@ -13,7 +13,24 @@ extern "C" void TIM2_IRQHandler(void) {
 }
 
 void initMillis(void) {
-
+  RCC_APB1PeriphResetCmd(RCC_APB1Periph_WWDG, DISABLE);
+  RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
+  TIM_TimeBaseInitTypeDef TIM_InitStruct;
+  TIM_InitStruct.TIM_Prescaler = SystemCoreClock / 1000000 - 1;
+  TIM_InitStruct.TIM_CounterMode = TIM_CounterMode_Up;
+  TIM_InitStruct.TIM_Period = 999;
+  TIM_InitStruct.TIM_ClockDivision = TIM_CKD_DIV1;
+  TIM_InitStruct.TIM_RepetitionCounter = 0;
+  TIM_TimeBaseInit(TIM2, &TIM_InitStruct);
+  TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE);
+  NVIC_InitTypeDef NVIC_InitStructure;
+  NVIC_InitStructure.NVIC_IRQChannel = TIM2_IRQn;
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+  NVIC_Init(&NVIC_InitStructure);
+  NVIC_EnableIRQ(TIM2_IRQn);
+  TIM_Cmd(TIM2, ENABLE);
 }
 
 void init(void) { initMillis(); }
@@ -25,7 +42,22 @@ int atexit(void (*func)()) {
   return 0;
 }
 
-void pinMode(uint8_t pin, uint8_t mode) { GpioPinMode(pin, mode); }
+void pinMode(uint8_t pin, uint8_t mode) { 
+  switch (mode) {
+    case INPUT:
+      GpioPinMode(pin, GPIO_Mode_IN_FLOATING); 
+      break;
+    case INPUT_PULLUP:
+      GpioPinMode(pin, GPIO_Mode_IPU); 
+      break;
+    case OUTPUT:
+      GpioPinMode(pin, GPIO_Mode_Out_PP); 
+      break;
+    default:
+      GpioPinMode(pin, mode); 
+      break;
+  }
+}
 
 void digitalWrite(uint8_t pin, uint8_t val) { GpioWriteState(pin, val); }
 

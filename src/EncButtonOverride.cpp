@@ -1,7 +1,8 @@
 #include "Arduino.h"
 
 bool EB_read(uint8_t pin) {
-    return digitalRead(pin);
+    auto result = digitalRead(pin);
+    return result;
 }
 
 void EB_mode(uint8_t pin, uint8_t mode) {
