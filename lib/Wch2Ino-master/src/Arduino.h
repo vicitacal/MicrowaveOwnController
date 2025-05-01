@@ -109,10 +109,15 @@ void yield(void);
 #define bitToggle(value, bit) ((value) ^= (1UL << (bit)))
 #define bitWrite(value, bit, bitvalue) ((bitvalue) ? bitSet(value, bit) : bitClear(value, bit))
 #define PROGMEM
+
 // avr-libc defines _NOP() since 1.6.2
 #ifndef _NOP
 #define _NOP() do { __asm__ volatile ("nop"); } while (0)
 #endif
+
+#define F(x) x
+#define PGM_P const char*
+#define pgm_read_byte(addr) (*(addr))
 
 typedef unsigned int word;
 

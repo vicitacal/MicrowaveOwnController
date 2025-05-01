@@ -1,11 +1,12 @@
 #include "pinconfig.h"
 #include "boozerController.h"
 #include "ch32v00x.h"
-#include "debug.h"
 #include <stdio.h>
 #include "EncButton.h"
 #include "TM16XX.h"
 #include "Arduino.h"
+#include "TM1652.h"
+#include "TM16xxDisplay.h"
 
 class Program {
 	
@@ -17,6 +18,9 @@ public:
 		Delay_Init();
 		USART_Printf_Init(115200);
 		GpioInitAll();
+		GpioPinMode(PIN_CTRL_MAG, OUTPUT);
+		_enc.setEncType(EB_STEP4_LOW);
+		_enc.setEncReverse(1);
 		init();
 
 		printf("SystemClk:%d\r\n", (int)SystemCoreClock);
@@ -26,30 +30,65 @@ public:
 
 	void Run() {
 		//_mainBoozer.PlaySequence();
-		//_enc.attach([this]() {printf("Count:%lu\r\n", _enc.counter);});
-		// GpioPinMode(PIN_ENC_A, INPUT);
-		// GpioPinMode(PIN_ENC_B, INPUT);
-		// GpioPinMode(PIN_ENC_BUT, INPUT);
-		GPIO_InitTypeDef GPIO_InitStructure;
-		GPIO_InitStructure.GPIO_Pin = GPIO_Pin_3;
-		GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD;
-		GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-		GPIO_Init(GPIOD, &GPIO_InitStructure);
+		_enc.attach([this]() { printf("Count:%lu\r\n", _enc.counter); });
+
 		while (true) {
-			printf("A:%d B:%d C:%d\r\n", GpioReadState(PIN_ENC_A), GpioReadState(PIN_ENC_B), GPIO_ReadInputDataBit(GPIOD, 3));
+			_enc.tick();
+			//printf("Count:%lu\r\n", _enc.counter);
+			//printf("A:%d B:%d C:%d\r\n", GpioReadState(PIN_ENC_A), GpioReadState(PIN_ENC_B), GpioReadState(PIN_ENC_BUT));
+		}
+	}
+
+	void callback() {
+		printf("callback: ");
+		switch (_enc.action()) {
+			case EB_PRESS:
+				printf("press\r\n");
+				break;
+			case EB_HOLD:
+				printf("hold\r\n");
+				break;
+			case EB_STEP:
+				printf("step\r\n");
+				break;
+			case EB_RELEASE:
+				printf("release\r\n");
+				break;
+			case EB_CLICK:
+				printf("click\r\n");
+				break;
+			case EB_CLICKS:
+				printf("clicks %d\r\n", _enc.getClicks());
+				break;
+			case EB_TURN:
+				printf("turn %d %d %d\r\n", _enc.dir(), _enc.fast(), _enc.pressing());
+				break;
+			case EB_REL_HOLD:
+				printf("release hold\r\n");
+				break;
+			case EB_REL_HOLD_C:
+				printf("release hold clicks %d\r\n", _enc.getClicks());
+				break;
+			case EB_REL_STEP:
+				printf("release step\r\n");
+				break;
+			case EB_REL_STEP_C:
+				printf("release step clicks %d\r\n", _enc.getClicks());
+				break;
 		}
 	}
 
 	void Click(){
-		GpioWriteState(PIN_CTRL_ATTACH, true);
+		GpioWriteState(PIN_CTRL_MAG, true);
 		delay(200);
-		GpioWriteState(PIN_CTRL_ATTACH, false);
+		GpioWriteState(PIN_CTRL_MAG, false);
 		delay(1000);
 	}
 
 private:
 
-	//EncButton _enc = EncButton(PIN_ENC_A, PIN_ENC_B, PIN_ENC_BUT, INPUT, INPUT);
+	TM1652 _display = TM1652(PIN_DISP_SDA);
+	EncButton _enc = EncButton(PIN_ENC_A, PIN_ENC_B, PIN_ENC_BUT, INPUT, INPUT);
 	//boozerController _mainBoozer;
 
 };

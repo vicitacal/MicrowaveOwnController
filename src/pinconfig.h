@@ -1,5 +1,3 @@
-#define STATE_HIGH 0x1
-#define STATE_LOW 0x0
 
 #define PA1 1
 #define PA2 2
@@ -20,12 +18,12 @@
 #define PD6 54
 #define PD7 55
 
-#define PIN_ENC_A PA1
-#define PIN_ENC_B PA2
+#define PIN_ENC_A PC7
 #define PIN_DISP_SDA PC0
 #define PIN_CTRL_MAG PC3
 #define PIN_CTRL_ATTACH PC5
 #define PIN_POWER_POT PC4
 #define PIN_BUZZER PD0
 #define PIN_ENC_BUT PD3
+#define PIN_ENC_B PC6
 #define PIN_DETECT_DOOR PD4
