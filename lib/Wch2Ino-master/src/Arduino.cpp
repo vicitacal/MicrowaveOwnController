@@ -51,7 +51,7 @@ void pinMode(uint8_t pin, uint8_t mode) {
       GpioPinMode(pin, GPIO_Mode_IPU); 
       break;
     case OUTPUT:
-      GpioPinMode(pin, GPIO_Mode_Out_PP); 
+      GpioPinMode(pin, OUTPUT); 
       break;
     default:
       GpioPinMode(pin, mode); 

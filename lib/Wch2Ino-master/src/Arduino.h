@@ -118,6 +118,8 @@ void yield(void);
 #define F(x) x
 #define PGM_P const char*
 #define pgm_read_byte(addr) (*(addr))
+#define pgm_read_byte_near(addr) (*(const uint8_t *)(addr))
+#define pgm_read_dword(addr)   (*(const uint32_t *)(addr))
 
 typedef unsigned int word;
 
