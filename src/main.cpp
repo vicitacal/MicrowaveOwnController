@@ -8,15 +8,19 @@
 #include "TM16XX.h"
 #include "TM16xxDisplay.h"
 
+#define V(x)( x ? 0xff : 0x00 )
+
 class Program {
 	
 public:
 
 	Program() {
 		_display.begin(true, 1);
-		_display.setDisplayToString("HUI7");
+		_display.setupDisplay(true, 0, 0);
 		_enc.setEncType(EB_STEP4_LOW);
 		_enc.setEncReverse(1);
+
+		pinMode(PIN_DETECT_DOOR, INPUT);
 
 		printf("SystemClk:%d\r\n", (int)SystemCoreClock);
 		printf("ChipID:%08x\r\n", (int)DBGMCU_GetCHIPID());
@@ -26,11 +30,19 @@ public:
 
 		//_mainBoozer.PlaySequence();
 		//_enc.attach([this]() { printf("Count:%lu\r\n", _enc.counter); _display.setDisplayToDecNumber(_enc.counter, _BV(4)); });
-
+		// for (size_t i = 1; i < 15; i++)
+		// {
+		// 	byte intens = i / 2;
+		// 	byte cur = (i - 1) / 2;
+		// 	_display.setupDisplay(true, intens, cur);
+		// 	_display.setDisplayToDecNumber(intens*10+cur, _BV(4));
+		// 	delay(1000);
+		// }
+		
 		while (true) {
 			if (_enc.tick()) {
 			 	printf("Count:%lu\r\n", _enc.counter);
-			 	_display.setDisplayToDecNumber(_enc.counter, _BV(4));
+			 	_display.setDisplayToDecNumber(_enc.counter, V(_enc.holding()));
 			}
 			//printf("Count:%lu\r\n", _enc.counter);
 			//printf("A:%d B:%d C:%d\r\n", GpioReadState(PIN_ENC_A), GpioReadState(PIN_ENC_B), GpioReadState(PIN_ENC_BUT));
